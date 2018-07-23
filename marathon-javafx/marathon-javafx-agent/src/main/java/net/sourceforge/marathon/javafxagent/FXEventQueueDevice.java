@@ -34,6 +34,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.PickResult;
+import javafx.scene.layout.VBox;
 import net.sourceforge.marathon.compat.JavaCompatibility;
 
 public class FXEventQueueDevice implements IDevice {
@@ -42,15 +43,25 @@ public class FXEventQueueDevice implements IDevice {
 
     public static class DeviceState {
         private boolean shiftPressed = false;
+
         private boolean ctrlPressed = false;
+
         private boolean altPressed = false;
+
         private boolean metaPressed = false;
+
         private boolean button1Pressed = false;
+
         private boolean button2Pressed = false;
+
         private boolean button3Pressed = false;
+
         private Node node;
+
         private double y;
+
         private double x;
+
         private Node dragSource;
 
         public DeviceState() {
@@ -121,8 +132,7 @@ public class FXEventQueueDevice implements IDevice {
         }
 
         private boolean isModifier(JavaAgentKeys keys) {
-            return keys == JavaAgentKeys.CONTROL || keys == JavaAgentKeys.ALT || keys == JavaAgentKeys.META
-                    || keys == JavaAgentKeys.SHIFT;
+            return keys == JavaAgentKeys.CONTROL || keys == JavaAgentKeys.ALT || keys == JavaAgentKeys.META || keys == JavaAgentKeys.SHIFT;
         }
 
         private void storeMouseDown(MouseButton button) {
@@ -344,7 +354,7 @@ public class FXEventQueueDevice implements IDevice {
     @Override
     public void moveto(Node node) {
         if (node instanceof Control) {
-            moveto(node, ((Control) node).getWidth() / 2, ((Control) node).getHeight() / 2);
+            moveto(node, ((Control)node).getWidth() / 2, ((Control)node).getHeight() / 2);
         }
     }
 
@@ -412,6 +422,25 @@ public class FXEventQueueDevice implements IDevice {
                     buttons, n, deviceState.shiftPressed, deviceState.ctrlPressed, deviceState.altPressed, deviceState.metaPressed,
                     buttons == MouseButton.PRIMARY, buttons == MouseButton.MIDDLE, buttons == MouseButton.SECONDARY, false,
                     popupTrigger, false, node));
+
+            // Dispatch events on TableColumnHeaders
+            if ((target == null || target.getParent() == null) && node != null && node.getParent() != null) {
+                // VBox check to avoid unnecessary extra clicks on other components
+                if (node.getParent().getParent() != null && !node.getParent().getParent().getClass().equals(VBox.class)) {
+                    dispatchEvent(createMouseEvent(MouseEvent.MOUSE_PRESSED, node, pickResult, x, y, screenXY.getX(), screenXY.getY(),
+                            buttons, n, deviceState.shiftPressed, deviceState.ctrlPressed, deviceState.altPressed, deviceState.metaPressed,
+                            buttons == MouseButton.PRIMARY, buttons == MouseButton.MIDDLE, buttons == MouseButton.SECONDARY, false,
+                            popupTrigger, false, node.getParent().getParent()));
+
+                    // Necessary to process header click
+                    boolean stillSincePress = true;
+
+                    dispatchEvent(createMouseEvent(MouseEvent.MOUSE_RELEASED, node, pickResult, x, y, screenXY.getX(), screenXY.getY(),
+                            buttons, n, deviceState.shiftPressed, deviceState.ctrlPressed, deviceState.altPressed, deviceState.metaPressed,
+                            buttons == MouseButton.PRIMARY, buttons == MouseButton.MIDDLE, buttons == MouseButton.SECONDARY, false,
+                            popupTrigger, stillSincePress, node.getParent().getParent()));
+                }
+            }
         }
     }
 
@@ -435,6 +464,7 @@ public class FXEventQueueDevice implements IDevice {
     }
 
     private Node getTarget_source, getTarget_target;
+
     private double getTarget_x, getTarget_y;
 
     private Node getTarget(Node source, double x, double y) {
@@ -445,7 +475,7 @@ public class FXEventQueueDevice implements IDevice {
         if (!(source instanceof Parent)) {
             return source;
         }
-        ObservableList<Node> children = ((Parent) source).getChildrenUnmodifiable();
+        ObservableList<Node> children = ((Parent)source).getChildrenUnmodifiable();
         for (Node child : children) {
             checkHit(child, x, y, hits, "");
         }
@@ -464,7 +494,7 @@ public class FXEventQueueDevice implements IDevice {
             if (!(child instanceof Parent)) {
                 return;
             }
-            ObservableList<Node> childrenUnmodifiable = ((Parent) child).getChildrenUnmodifiable();
+            ObservableList<Node> childrenUnmodifiable = ((Parent)child).getChildrenUnmodifiable();
             for (Node node : childrenUnmodifiable) {
                 checkHit(node, x, y, hits, "    " + indent);
             }
@@ -482,6 +512,7 @@ public class FXEventQueueDevice implements IDevice {
         if (pickResult == null) {
             pickResult = new PickResult(target, sceneXY.getX(), sceneXY.getY());
         }
+
         return new MouseEvent(source, target, eventType, x, y, screenX, screenY, button, clickCount, shiftDown, controlDown,
                 altDown, metaDown, primaryButtonDown, middleButtonDown, secondaryButtonDown, synthesized, popupTrigger,
                 stillSincePress, pickResult);
@@ -499,11 +530,11 @@ public class FXEventQueueDevice implements IDevice {
         if (scrollPane.contains(nodeBounds.getMinX() - contentBounds.getMinX(), nodeBounds.getMinY() - contentBounds.getMinY())) {
             return;
         }
-        double toVScroll = (nodeBounds.getMinY() - contentBounds.getMinY())
-                * ((scrollPane.getVmax() - scrollPane.getVmin()) / (contentBounds.getHeight() - viewportBounds.getHeight()));
+        double toVScroll = (nodeBounds.getMinY() - contentBounds.getMinY()) *
+                ((scrollPane.getVmax() - scrollPane.getVmin()) / (contentBounds.getHeight() - viewportBounds.getHeight()));
         scrollPane.setVvalue(toVScroll);
-        double toHScroll = (nodeBounds.getMinX() - contentBounds.getMinX())
-                * ((scrollPane.getHmax() - scrollPane.getHmin()) / (contentBounds.getWidth() - viewportBounds.getWidth()));
+        double toHScroll = (nodeBounds.getMinX() - contentBounds.getMinX()) *
+                ((scrollPane.getHmax() - scrollPane.getHmin()) / (contentBounds.getWidth() - viewportBounds.getWidth()));
         scrollPane.setHvalue(toHScroll);
     }
 
@@ -512,7 +543,7 @@ public class FXEventQueueDevice implements IDevice {
         while (p != null && !(p instanceof ScrollPane)) {
             p = p.getParent();
         }
-        return (ScrollPane) p;
+        return (ScrollPane)p;
     }
 
 }
