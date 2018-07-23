@@ -1,3 +1,6 @@
+# MARATHON - Develop
+This is were I keep some custom additions to the Jalian Marathon software. 
+
 # MARATHON - Test Automation for Java/Swing and Java/FX applications
 
 Marathon is a tool for recording, replaying, refactoring test cases for Java GUI programs developed using Swing or FX components. Marathon consists of an editor, a recorder and a player. Marathon records the test cases in an easy to read and maintainable format using JRuby. The test cases can be run either through the UI or in batch mode.
