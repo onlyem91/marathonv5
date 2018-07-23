@@ -177,3 +177,8 @@
 /marathon-recording-server/bin/
 /marathon-recording-server/.gitignore
 
+.classpath
+.project
+.settings
+*.mf
+
