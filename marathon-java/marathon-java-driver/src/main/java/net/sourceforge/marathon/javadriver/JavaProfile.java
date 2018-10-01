@@ -272,6 +272,8 @@ public class JavaProfile {
             if (classPathEntries.size() > 0) {
                 args.add("-cp");
                 args.add(getClassPath());
+                args.add(getToolOptions());
+                args.add(getToolOptionsUser());
             }
             args.add(mainClass);
             args.addAll(appArguments);
@@ -1053,6 +1055,14 @@ public class JavaProfile {
             java_tool_options.append(" -javaagent:\"" + getRecorderJar() + "\"=" + recordingPort).append(" ");
         }
         addExtensions(java_tool_options);
+
+        LOGGER.info("Java tool options: " + java_tool_options);
+        return java_tool_options.toString();
+    }
+
+    private String getToolOptionsUser() {
+        StringBuilder java_tool_options = new StringBuilder();
+
         for (String vmArg : vmArguments) {
             java_tool_options.append("\"" + vmArg + "\"").append(" ");
         }
@@ -1063,13 +1073,10 @@ public class JavaProfile {
         if (System.getProperty("marathon.project.dir") != null) {
             java_tool_options.append("-Dmarathon.project.dir=\"" + System.getProperty("marathon.project.dir") + "\" ");
         }
-        java_tool_options.setLength(java_tool_options.length() - 1);
-        if (java_tool_options.length() > 1023) {
-            throw new RuntimeException("JAVA_TOOL_OPTIONS is more than 1023 bytes. Move marathon installation to a shorter path");
-        }
+
+        LOGGER.info("Remaining Java tool options: " + java_tool_options);
         return java_tool_options.toString();
     }
-
     private String getRecorderJar() {
         if (System.getenv(MARATHON_RECORDER + ".file") != null) {
             return System.getenv(MARATHON_RECORDER + ".file");

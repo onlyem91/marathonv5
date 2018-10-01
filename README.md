@@ -1,5 +1,9 @@
 # MARATHON - Develop
 This is were I keep some custom additions to the Jalian Marathon software. 
+Currently this project is based on the Marathon 5.2.2.0 version with the following additions:
+- Addition: process clicks on TableColumnHeaders 
+- Fixed the limitation on the length of the installation path / VM arguments. This used to result in the application not starting due to missing VM args and an error message "move marathon to shorter installation path". 
+
 
 # MARATHON - Test Automation for Java/Swing and Java/FX applications
 
