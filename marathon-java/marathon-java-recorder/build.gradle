@@ -53,6 +53,9 @@ compileTestJava {
 }
 
 dependencies {
+  compile files('lib/jviews-chart-all-8.9.6.jar')
+  compile files('lib/jviews-framework-all-8.9.jar')
+  compile files('lib/vos-twd-gui-3.3.1-SNAPSHOT.jar')
   compile project(":marathon-core:JSON-java")
   compile project(':marathon-java:marathon-java-agent')
   testCompile "org.testng:testng:${testng_version}"
