@@ -39,8 +39,10 @@ import javax.swing.table.JTableHeader;
 import javax.swing.text.JTextComponent;
 import javax.swing.tree.DefaultTreeCellEditor.EditorContainer;
 
+import ilog.views.chart.IlvChart;
 import net.sourceforge.marathon.javaagent.JavaTargetLocator.JWindow;
 import net.sourceforge.marathon.javaagent.components.DefaultEditorJavaElement;
+import net.sourceforge.marathon.javaagent.components.IlvChartAreaElement;
 import net.sourceforge.marathon.javaagent.components.JColorChooserJavaElement;
 import net.sourceforge.marathon.javaagent.components.JComboBoxJavaElement;
 import net.sourceforge.marathon.javaagent.components.JEditorPaneJavaElement;
@@ -136,6 +138,7 @@ public class JavaElementFactory {
         add(DefaultEditor.class, DefaultEditorJavaElement.class);
         add(JColorChooser.class, JColorChooserJavaElement.class);
         add(JFileChooser.class, JFileChooserJavaElement.class);
+        add(IlvChart.Area.class, IlvChartAreaElement.class);
     }
 
     public static Class<? extends IJavaElement> get(Component component) {
