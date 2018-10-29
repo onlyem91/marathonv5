@@ -48,6 +48,7 @@ import javax.swing.plaf.basic.ComboPopup;
 import javax.swing.table.JTableHeader;
 import javax.swing.text.JTextComponent;
 
+import ilog.views.chart.IlvChart;
 import net.sourceforge.marathon.javarecorder.IJSONRecorder;
 import net.sourceforge.marathon.javarecorder.JSONOMapConfig;
 
@@ -59,6 +60,7 @@ public class RComponentFactory {
 
     private static class InstanceCheckFinder implements IRComponentFinder {
         private Class<? extends Component> componentKlass;
+
         private Class<? extends RComponent> rComponentKlass;
 
         public InstanceCheckFinder(Class<? extends Component> componentKlass, Class<? extends RComponent> javaElementKlass) {
@@ -125,6 +127,7 @@ public class RComponentFactory {
         add(JEditorPane.class, REditorPane.class);
         add(JLabel.class, RLabel.class);
         add(JScrollBar.class, RIgnoreComponent.class);
+        add(IlvChart.Area.class, RIlvChartArea.class);
     }
 
     static {
@@ -177,19 +180,19 @@ public class RComponentFactory {
         } else if (component instanceof JProgressBar) {
         } else if (component instanceof JSlider) {
         } else if (parent instanceof JTable) {
-            setLocationForTable((JTable) parent, location);
+            setLocationForTable((JTable)parent, location);
             realComponent = getComponent(parent, location);
         } else if (parent instanceof JComboBox) {
             realComponent = getComponent(parent, location);
         } else if (greatgrandparent instanceof ComboPopup) {
             realComponent = null;
             if (greatgrandparent instanceof BasicComboPopup) {
-                realComponent = getComponent(((BasicComboPopup) greatgrandparent).getInvoker(), location);
+                realComponent = getComponent(((BasicComboPopup)greatgrandparent).getInvoker(), location);
             }
         } else if (component instanceof ComboPopup) {
             realComponent = null;
             if (component instanceof BasicComboPopup) {
-                realComponent = getComponent(((BasicComboPopup) component).getInvoker(), location);
+                realComponent = getComponent(((BasicComboPopup)component).getInvoker(), location);
             }
         } else if (parent instanceof JSpinner) {
             realComponent = parent;
@@ -207,7 +210,7 @@ public class RComponentFactory {
         Component parent = component;
         while (parent != null) {
             if (parent instanceof JColorChooser) {
-                return (JColorChooser) parent;
+                return (JColorChooser)parent;
             }
             parent = parent.getParent();
         }
@@ -218,7 +221,7 @@ public class RComponentFactory {
         Component parent = component;
         while (parent != null) {
             if (parent instanceof JFileChooser) {
-                return (JFileChooser) parent;
+                return (JFileChooser)parent;
             }
             parent = parent.getParent();
         }
